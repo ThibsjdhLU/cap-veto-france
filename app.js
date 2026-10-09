@@ -119,7 +119,33 @@ function dataPage(){return heading('DONNÉES & MÉTHODE','Un outil vérifiable',
 `<div class="layout-grid">${card(`<h3 class="card-title">Confidentialité du site</h3><p class="card-sub">L'application se présente sans ton dossier : toutes les données personnelles sont chargées après importation dans ce navigateur.</p><div class="info-strip">Aucune note, nom, adresse, date de naissance ou numéro de candidat ne figure dans les fichiers du site public. Les données importées restent dans le stockage local du navigateur, et les calculs sont effectués sur l'appareil.</div><p class="method">Attention : vider les données Safari ou passer sur un autre appareil peut supprimer l'accès à ton dossier local. Exporte régulièrement une sauvegarde JSON dans un endroit privé.</p>${state?`<div class="stat-band"><div class="block"><strong>${grades().length}</strong><small>Évaluations</small></div><div class="block"><strong>${state.history?.length||0}</strong><small>Moyennes historiques</small></div><div class="block"><strong>${Object.keys(state.confirmed||{}).length}</strong><small>Notes officielles</small></div></div>`:'<p class="muted mini">Aucun dossier importé pour le moment.</p>'}<div class="form-actions">${btn('Importer JSON','import')}${btn('Exporter JSON','export')}${btn('Réinitialiser','reset','warn')}</div>`,'span-7')}
 ${card(`<h3 class="card-title">Règles et formules</h3><p class="method"><strong>Moyenne de matière</strong> : somme(notes × coefficients) / somme(coefficients).</p><p class="method"><strong>Bac</strong> : somme(notes × coefficients officiels) / 102 si l'option maths complémentaires est suivie uniquement en Terminale.</p><p class="method"><strong>Comparaison ENV</strong> : moyenne de la matière − moyenne 2026 des admissibles. Aucun seuil personnel ou percentile ne peut être déduit de cette seule moyenne.</p><p class="method"><strong>Fourchette du bac</strong> : variation mécanique de ±1,2 point sur les blocs non acquis. Ce n'est pas un intervalle statistiquement calibré.</p>${tag('Modèle explicite · pas de pourcentage inventé','green')}`,'span-5')}
 ${card(`<h3 class="card-title">Sources officielles consultables</h3><p class="card-sub">Les données officielles de 2026 servent de références historiques. Les procédures 2027 peuvent évoluer.</p><ol class="ref-list">${SOURCES.map(s=>`<li><a href="${s[1]}" target="_blank" rel="noopener noreferrer" class="source-link">${clean(s[0])} ↗</a></li>`).join('')}</ol><div class="info-strip blue">Pour automatiser l'import des notes depuis le logiciel scolaire, il faudra un connecteur séparé et autorisé. Aucune connexion à l'ENT n'est actuellement effectuée.</div>`)}</div>`;}
-function render(){route=location.hash.slice(1)||'accueil';if(!['accueil','notes','bac','env','calendrier','donnees'].includes(route))route='accueil';for(let n of document.querySelectorAll('[data-route]'))n.classList.toggle('active',n.dataset.route===route);const pages={accueil:overview,notes:notesPage,bac:bacPage,env:envPage,calendrier:calendarPage,donnees:dataPage};$('#main').innerHTML=pages[route]();document.title=`Cap Véto France — ${route==='accueil'?'Vue d’ensemble':route}`;}
+function render() {
+  route = location.hash.slice(1) || 'accueil';
+
+  if (![
+    'accueil', 'notes', 'bac', 'env',
+    'calendrier', 'donnees', 'sync'
+  ].includes(route)) {
+    route = 'accueil';
+  }
+
+  for (const n of document.querySelectorAll('[data-route]')) {
+    n.classList.toggle('active', n.dataset.route === route);
+  }
+
+  const pages = {
+    accueil: overview,
+    notes: notesPage,
+    bac: bacPage,
+    env: envPage,
+    calendrier: calendarPage,
+    donnees: dataPage,
+    sync: () => window.capVetoSyncPage()
+  };
+
+  $('#main').innerHTML = pages[route]();
+  document.title = `Cap Véto France — ${route === 'accueil' ? 'Vue d’ensemble' : route}`;
+}
 function goto(r){location.hash=r;render();window.scrollTo({top:0,behavior:'instant'});$('#sidebar').classList.remove('open');}
 function triggerDownload(name,type,content){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);}
 function csvExport(){const col=['date','matiere','note','coefficient','moyenne_classe','annee'];const cell=v=>`"${String(v??'').replace(/"/g,'""')}"`;let rows=[col.join(',')];for(let g of grades())rows.push([g.date,g.subject,g.grade,g.coefficient,g.classAvg,'Terminale'].map(cell).join(','));triggerDownload('mes_notes_terminale.csv','text/csv;charset=utf-8','\ufeff'+rows.join('\r\n'));}
