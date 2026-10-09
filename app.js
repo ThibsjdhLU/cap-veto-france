@@ -3,7 +3,7 @@
 */
 'use strict';
 const KEY='cap-veto-france-private-v1';
-const VERSION='1.1 · GitHub Pages';
+const VERSION='2.0 · GitHub Pages + Cloudflare';
 const OFFICIAL_BAC='https://www.education.gouv.fr/reussir-au-lycee/comment-calculer-votre-note-au-baccalaureat-325511';
 const REPORT_2026='https://www.concours-veto-postbac.fr/wp-content/uploads/2026/09/Rapport_Concours_ENVF_Public_2026_VD.pdf';
 const ENV_CAL='https://www.concours-veto-postbac.fr/';
@@ -63,7 +63,7 @@ const heading=(eyebrow,title,desc,buttons='')=>`<div class="page-header"><div><d
 const btn=(label,action,cls='')=>`<button class="btn ${cls}" data-action="${action}">${label}</button>`;
 const tag=(s,color='')=>`<span class="tag ${color}">${clean(s)}</span>`;
 const card=(content,span='',extra='')=>`<section class="card ${span} ${extra}">${content}</section>`;
-const emptyState=()=>`<section class="card empty"><div class="empty-icon">▤</div><h2>Ton dossier est prêt à être importé</h2><p>Le site ne contient aucune note personnelle dans son code. Importe <strong>MON_DOSSIER_PERSONNEL.json</strong> une seule fois : tes 9 notes, ton historique et les résultats officiels du bac apparaîtront immédiatement.</p>${btn('Importer mon dossier','import','primary')}<p class="micro" style="margin-top:14px">Le fichier reste dans ton navigateur. Aucune transmission vers un serveur.</p></section>`;
+const emptyState=()=>`<section class="card empty"><div class="empty-icon">▤</div><h2>Ton dossier est prêt à être importé</h2><p>Le site ne contient aucune note personnelle dans son code. Importe <strong>MON_DOSSIER_PERSONNEL.json</strong> une seule fois : tes 9 notes, ton historique et les résultats officiels du bac apparaîtront immédiatement.</p>${btn('Importer mon dossier','import','primary')}<p class="micro" style="margin-top:14px">Un import manuel reste dans ton navigateur. La connexion cloud est facultative et transmet uniquement les notes synchronisées au Worker privé.</p></section>`;
 let state=readState();let route=(location.hash.slice(1)||'accueil');
 function readState(){try {let s=JSON.parse(localStorage.getItem(KEY)||'null');return s?.schema==='cap-veto-france-v1'?s:null;}catch{return null;}}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));$('#save-status').textContent='Enregistré localement';}catch{$('#save-status').textContent='Stockage indisponible';toast('Stockage local indisponible : exporte une sauvegarde JSON.');}}
@@ -96,7 +96,7 @@ ${card(`<h3 class="card-title">Prochaine étape</h3><p class="card-sub">Rester c
 function notesPage(){if(!state)return heading('DOSSIER SCOLAIRE','Mes notes','Importe ton dossier personnel pour consulter et ajouter les évaluations.')+emptyState();let av=averages();let table=grades().slice().sort((a,b)=>b.date.localeCompare(a.date)).map(g=>`<tr><td>${clean(g.date)}</td><td><strong>${clean(g.subject)}</strong></td><td class="num">${fmt(g.grade)}</td><td class="num">${fmt(g.coefficient,2)}</td><td class="num">${g.classAvg===null?'—':fmt(g.classAvg)}</td><td class="num"><button class="btn small warn" data-action="delete-grade" data-id="${clean(g.id)}">Supprimer</button></td></tr>`).join('');const overview=Object.entries(av).sort((a,b)=>b[1].value-a[1].value).map(([s,a])=>`<tr><td><strong>${clean(s)}</strong></td><td class="num">${fmt(a.value)}</td><td class="num">${a.classAvg===null?'—':fmt(a.classAvg)}</td><td class="num">${a.n}</td></tr>`).join('');return heading('DONNÉES SCOLAIRES','Mes notes','Ajoute tes contrôles au fur et à mesure. L’application recalcule tes moyennes et le bac sans modifier les notes acquises.',btn('Exporter les notes CSV','export-csv')+btn('Sauvegarder le dossier','export','primary'))+
 `<div class="layout-grid">${card(`<h3 class="card-title">Ajouter une évaluation</h3><p class="card-sub">Le coefficient est celui du contrôle dans la matière, pas le coefficient du bac.</p><form id="addgrade"><div class="form-grid"><div class="field"><label>Date</label><input required type="date" name="date" value="${new Date().toISOString().slice(0,10)}"></div><div class="field"><label>Matière</label><select name="subject">${SUBJECTS.map(s=>`<option>${clean(s)}</option>`).join('')}</select></div><div class="field"><label>Note /20</label><input required name="grade" type="number" min="0" max="20" step="0.01" placeholder="18,5"></div><div class="field"><label>Coefficient</label><input required name="coefficient" type="number" min="0.01" max="100" step="any" value="1"></div><div class="field"><label>Moyenne de classe</label><input name="classAvg" type="number" min="0" max="20" step="0.01" placeholder="Optionnelle"></div></div><div class="form-actions"><button class="btn primary" type="submit">+ Ajouter la note</button>${btn('Importer une sauvegarde','import')}</div></form>`,'span-7')}
 ${card(`<h3 class="card-title">Moyennes actuelles</h3><p class="card-sub">Moyennes pondérées des évaluations réellement présentes dans le dossier.</p><div class="table-scroll"><table class="data-table"><thead><tr><th>Matière</th><th class="num">Toi</th><th class="num">Classe</th><th class="num">Notes</th></tr></thead><tbody>${overview}</tbody></table></div>`,'span-5')}
-${card(`<h3 class="card-title">Historique des évaluations</h3><p class="card-sub">Suppression possible, aucune donnée envoyée à un serveur.</p><div class="table-scroll"><table class="data-table"><thead><tr><th>Date</th><th>Matière</th><th class="num">Note</th><th class="num">Coef.</th><th class="num">Classe</th><th></th></tr></thead><tbody>${table}</tbody></table></div>`)}
+${card(`<h3 class="card-title">Historique des évaluations</h3><p class="card-sub">Suppression locale possible ; la synchronisation ÉcoleDirecte est facultative.</p><div class="table-scroll"><table class="data-table"><thead><tr><th>Date</th><th>Matière</th><th class="num">Note</th><th class="num">Coef.</th><th class="num">Classe</th><th></th></tr></thead><tbody>${table}</tbody></table></div>`)}
 ${historyCard()}</div>`;}
 function subjectHistory(name){const hist=(state?.history||[]).filter(x=>x.subject===name);const yrOrder={'Troisième':0,'Seconde':1,'Première':2},pOrder={'T1':0,'S1':0,'T2':1,'S2':1,'T3':2};return hist.sort((a,b)=>yrOrder[a.year]-yrOrder[b.year]||pOrder[a.period]-pOrder[b.period]);}
 function historyChart(rows){if(!rows.length)return '<div class="info-strip">Pas encore de données pour cette matière.</div>';const w=670,h=190,pad=34,dx=(w-2*pad)/(rows.length-1||1);const coords=rows.map((r,i)=>[pad+i*dx,h-pad-r.grade/20*(h-2*pad)]);const poly=coords.map(p=>p.join(',')).join(' ');let grid=[5,10,15,20].map(x=>`<line class="chart-grid" x1="${pad}" y1="${h-pad-x/20*(h-2*pad)}" x2="${w-pad}" y2="${h-pad-x/20*(h-2*pad)}"/><text class="chart-label" x="4" y="${h-pad-x/20*(h-2*pad)+3}">${x}</text>`).join('');return `<svg class="svg-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Évolution des moyennes par bulletin">${grid}<polyline class="chart-line" points="${poly}"/>${coords.map((p,i)=>`<circle class="chart-point" cx="${p[0]}" cy="${p[1]}" r="4"><title>${clean(rows[i].year)} ${clean(rows[i].period)} : ${fmt(rows[i].grade)}</title></circle><text class="chart-label" x="${p[0]}" y="${h-8}" text-anchor="middle">${clean(rows[i].year.slice(0,1))}${clean(rows[i].period)}</text>`).join('')}</svg>`;}
@@ -119,33 +119,8 @@ function dataPage(){return heading('DONNÉES & MÉTHODE','Un outil vérifiable',
 `<div class="layout-grid">${card(`<h3 class="card-title">Confidentialité du site</h3><p class="card-sub">L'application se présente sans ton dossier : toutes les données personnelles sont chargées après importation dans ce navigateur.</p><div class="info-strip">Aucune note, nom, adresse, date de naissance ou numéro de candidat ne figure dans les fichiers du site public. Les données importées restent dans le stockage local du navigateur, et les calculs sont effectués sur l'appareil.</div><p class="method">Attention : vider les données Safari ou passer sur un autre appareil peut supprimer l'accès à ton dossier local. Exporte régulièrement une sauvegarde JSON dans un endroit privé.</p>${state?`<div class="stat-band"><div class="block"><strong>${grades().length}</strong><small>Évaluations</small></div><div class="block"><strong>${state.history?.length||0}</strong><small>Moyennes historiques</small></div><div class="block"><strong>${Object.keys(state.confirmed||{}).length}</strong><small>Notes officielles</small></div></div>`:'<p class="muted mini">Aucun dossier importé pour le moment.</p>'}<div class="form-actions">${btn('Importer JSON','import')}${btn('Exporter JSON','export')}${btn('Réinitialiser','reset','warn')}</div>`,'span-7')}
 ${card(`<h3 class="card-title">Règles et formules</h3><p class="method"><strong>Moyenne de matière</strong> : somme(notes × coefficients) / somme(coefficients).</p><p class="method"><strong>Bac</strong> : somme(notes × coefficients officiels) / 102 si l'option maths complémentaires est suivie uniquement en Terminale.</p><p class="method"><strong>Comparaison ENV</strong> : moyenne de la matière − moyenne 2026 des admissibles. Aucun seuil personnel ou percentile ne peut être déduit de cette seule moyenne.</p><p class="method"><strong>Fourchette du bac</strong> : variation mécanique de ±1,2 point sur les blocs non acquis. Ce n'est pas un intervalle statistiquement calibré.</p>${tag('Modèle explicite · pas de pourcentage inventé','green')}`,'span-5')}
 ${card(`<h3 class="card-title">Sources officielles consultables</h3><p class="card-sub">Les données officielles de 2026 servent de références historiques. Les procédures 2027 peuvent évoluer.</p><ol class="ref-list">${SOURCES.map(s=>`<li><a href="${s[1]}" target="_blank" rel="noopener noreferrer" class="source-link">${clean(s[0])} ↗</a></li>`).join('')}</ol><div class="info-strip blue">Pour automatiser l'import des notes depuis le logiciel scolaire, il faudra un connecteur séparé et autorisé. Aucune connexion à l'ENT n'est actuellement effectuée.</div>`)}</div>`;}
-function render() {
-  route = location.hash.slice(1) || 'accueil';
-
-  if (![
-    'accueil', 'notes', 'bac', 'env',
-    'calendrier', 'donnees', 'sync'
-  ].includes(route)) {
-    route = 'accueil';
-  }
-
-  for (const n of document.querySelectorAll('[data-route]')) {
-    n.classList.toggle('active', n.dataset.route === route);
-  }
-
-  const pages = {
-    accueil: overview,
-    notes: notesPage,
-    bac: bacPage,
-    env: envPage,
-    calendrier: calendarPage,
-    donnees: dataPage,
-    sync: () => window.capVetoSyncPage()
-  };
-
-  $('#main').innerHTML = pages[route]();
-  document.title = `Cap Véto France — ${route === 'accueil' ? 'Vue d’ensemble' : route}`;
-}
+function render(){route=location.hash.slice(1)||'accueil';if(!['accueil','notes','bac','env','calendrier','donnees','sync','stats'].includes(route))route='accueil';for(let n of document.querySelectorAll('[data-route]'))n.classList.toggle('active',n.dataset.route===route);const pages={accueil:overview,notes:notesPage,bac:bacPage,env:envPage,calendrier:calendarPage,donnees:dataPage,sync:()=>window.capVetoSyncPage?.()||'<p>Module de synchronisation indisponible.</p>',stats:()=>window.capVetoStatsPage?.(state)||'<p>Statistiques indisponibles.</p>'};$('#main').innerHTML=pages[route]();document.title=`Cap Véto France — ${route==='accueil'?'Vue d’ensemble':route}`;}
+window.capVetoStatsRefresh=()=>{if(location.hash==='#stats')render();};
 function goto(r){location.hash=r;render();window.scrollTo({top:0,behavior:'instant'});$('#sidebar').classList.remove('open');}
 function triggerDownload(name,type,content){const url=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);}
 function csvExport(){const col=['date','matiere','note','coefficient','moyenne_classe','annee'];const cell=v=>`"${String(v??'').replace(/"/g,'""')}"`;let rows=[col.join(',')];for(let g of grades())rows.push([g.date,g.subject,g.grade,g.coefficient,g.classAvg,'Terminale'].map(cell).join(','));triggerDownload('mes_notes_terminale.csv','text/csv;charset=utf-8','\ufeff'+rows.join('\r\n'));}
@@ -162,7 +137,9 @@ function validateImport(o){
   const optNumber=(n)=>n===null||n===undefined?null:(valid(n)?n:NaN);
   const grades=o.grades.map((g,i)=>{
     if(!g||!SUBJECTS.includes(g.subject)||!valid(g.grade)||!valid(g.coefficient,.00001,100)||typeof g.date!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(g.date)||!Number.isFinite(optNumber(g.classAvg))&&optNumber(g.classAvg)!==null)throw Error('Une évaluation contient des valeurs non valides.');
-    return {id:String(g.id??`import-${i}`).slice(0,80),date:g.date,subject:g.subject,grade:g.grade,coefficient:g.coefficient,classAvg:optNumber(g.classAvg)};
+    if((g.classMin!==undefined&&g.classMin!==null&&!valid(g.classMin))||(g.classMax!==undefined&&g.classMax!==null&&!valid(g.classMax)))throw Error('Bornes de classe invalides.');
+    return {id:String(g.id??`import-${i}`).slice(0,80),date:g.date,subject:g.subject,grade:g.grade,coefficient:g.coefficient,classAvg:optNumber(g.classAvg),
+      classMin:optNumber(g.classMin),classMax:optNumber(g.classMax),title:String(g.title??'').slice(0,120),codePeriode:String(g.codePeriode??'').slice(0,16)};
   });
   const hist=o.history.map(h=>{
     if(!h||typeof h.year!=='string'||typeof h.period!=='string'||typeof h.subject!=='string'||!valid(h.grade)||(!valid(h.classAvg)&&h.classAvg!==null&&h.classAvg!==undefined))throw Error('Une moyenne historique n’est pas valide.');
@@ -179,8 +156,18 @@ function validateImport(o){
       if(BACCMP.some(p=>p[0]===key&&p[3]!=='confirmed')&&valid(n))settings.forecasts[key]=n;
     }
   }
+  const edPeriods=Array.isArray(o.edPeriods)?o.edPeriods.slice(0,12).map(p=>{
+    const safe20=x=>valid(x)?x:null;
+    const disciplines=Array.isArray(p?.disciplines)?p.disciplines.slice(0,90).filter(d=>d&&SUBJECTS.includes(d.subject)).map(d=>({subject:d.subject,
+      studentAvg:safe20(d.studentAvg),classAvg:safe20(d.classAvg),classMin:safe20(d.classMin),classMax:safe20(d.classMax),
+      effectifReported:Number.isInteger(d.effectifReported)&&d.effectifReported>0&&d.effectifReported<=1000?d.effectifReported:null,
+      rankReported:Number.isInteger(d.rankReported)&&d.rankReported>0&&d.rankReported<=1000?d.rankReported:null})):[];
+    return {code:String(p?.code??'').slice(0,16),label:String(p?.label??'').slice(0,60),
+      isAnnual:p?.isAnnual===true,studentAvg:safe20(p?.studentAvg),classAvg:safe20(p?.classAvg),
+      classMin:safe20(p?.classMin),classMax:safe20(p?.classMax),disciplines};
+  }):[];
   const checks={};for(const ev of EVENT_LIST)if(o.checks?.[ev.id]===true)checks[ev.id]=true;
-  return {schema:'cap-veto-france-v1',grades,history:hist,confirmed,settings,checks,savedAt:new Date().toISOString()};
+  return {schema:'cap-veto-france-v1',grades,history:hist,confirmed,settings,checks,edPeriods,savedAt:new Date().toISOString()};
 }
 $('#importfile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{if(f.size>5*1024*1024)throw Error('Ce fichier dépasse la taille autorisée (5 Mo).');let imported=validateImport(JSON.parse(await f.text()));if(state&&grades().length&&!confirm('Remplacer le dossier actuel par celui du fichier ?'))return;state=imported;persist();render();toast(`Dossier importé : ${state.grades.length} notes et ${state.history.length} moyennes historiques.`);}catch(err){toast(err.message);}finally{e.target.value='';}});
 $('#main').addEventListener('click',e=>{const target=e.target.closest('[data-action]');if(target){e.preventDefault();action(target.dataset.action,target.dataset.id);}});

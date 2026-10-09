@@ -3,3 +3,26 @@
 @media(max-width:1250px){main{padding:31px 30px}.card.span-3{grid-column:span 6}.card.span-5,.card.span-7{grid-column:span 6}}
 @media(max-width:900px){.sidebar{position:fixed;transform:translateX(-103%);transition:transform .2s;box-shadow:4px 0 28px #0a26383a}.sidebar.open{transform:translateX(0)}.menu-button{display:block}.topbar{padding:0 19px}main{padding:27px 21px}.page-title{font-size:25px}.card.span-3{grid-column:span 6}.card.span-4{grid-column:span 6}.card.span-8{grid-column:span 12}}
 @media(max-width:640px){main{padding:20px 14px 50px}.page-header{display:block}.head-buttons{margin-top:13px}.topbar{height:62px}.top-breadcrumb{gap:6px;font-size:9px}.save-status{display:none}.card{padding:17px}.card.span-3,.card.span-4,.card.span-5,.card.span-6,.card.span-7,.card.span-8,.card.span-9{grid-column:span 12}.metric-card{min-height:110px}.metric-num{font-size:27px;margin:9px 0 3px}.layout-grid{gap:11px}.form-grid,.cols2{grid-template-columns:1fr}.event{grid-template-columns:65px 16px 1fr;gap:9px}.stat-band{gap:7px}.stat-band .block{padding:12px 7px}.stat-band .block strong{font-size:19px}.top-avatar{display:none}.footer{font-size:9px;padding:14px}.footer span{margin:0 2px}.page-title{font-size:24px}}
+
+/* Cap Véto – statistiques avancées */
+.stat-filters{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:14px 0 21px;padding:14px 18px;background:#fff;border:1px solid #e6ebf3;border-radius:14px}
+.stat-filters label{font-size:12px;font-weight:700;color:#53617a}
+.stat-filters select,.stat-form input{border:1px solid #dbe2ed;background:#fff;border-radius:9px;padding:10px;color:#18243a;font:inherit;max-width:100%}
+.stat-filters select{min-width:205px}
+.stat-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.stat-metric{background:#fff;border:1px solid #e7ebf4;border-radius:14px;padding:18px 16px;min-height:119px}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#70809b;font-weight:700}
+.stat-val{font-size:25px;font-weight:800;letter-spacing:-.7px;color:#162640;margin:10px 0 3px}
+.stat-hint{font-size:11px;line-height:1.55;color:#7b8aa1;margin:7px 0 0}
+.stat-svg{width:100%;height:auto;min-height:160px;display:block}
+.stat-muted{color:#8390a5;font-size:13px;margin:20px 0}
+.stat-positive{color:#19764f!important;font-weight:700}
+.stat-negative{color:#a34e51!important;font-weight:700}
+.stat-histogram{height:200px;display:flex;align-items:stretch;gap:4px;justify-content:space-between;padding:10px 4px}
+.stat-bin{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font-size:11px;color:#7788a3}
+.stat-bin span{height:17px}.stat-bin small{margin-top:6px}.stat-bin-bar{width:75%;min-height:1px;background:#6188e3;border-radius:4px 4px 0 0}
+.stat-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}.stat-form label{font-size:12px;color:#62718b;display:grid;gap:7px}
+.stat-target{margin:15px 0;padding:17px;border:1px solid #dce5fb;background:#f7f9ff;border-radius:12px;display:grid;gap:8px}
+.stat-target strong{font-size:22px;color:#234c9b}.stat-target span{font-size:12px;color:#61718e}
+@media(max-width:1100px){.stat-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:570px){.stat-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.stat-metric{padding:13px 10px;min-height:98px}.stat-val{font-size:20px}.stat-label,.stat-hint{font-size:10px}.stat-form{grid-template-columns:1fr}.stat-filters select{width:100%}}

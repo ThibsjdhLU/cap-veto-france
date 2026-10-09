@@ -9,8 +9,9 @@
   <meta name="description" content="Cap Véto France : relevé de notes, bac 2027 et comparaison des concours vétérinaires publics."/>
   <title>Cap Véto France — Tableau de bord</title>
   <link rel="stylesheet" href="./styles.css"/>
-  <script defer src="./sync.js"></script>
+  <script defer src="./stats.js"></script>
   <script defer src="./app.js"></script>
+  <script defer src="./sync.js"></script>
 </head>
 <body>
   <div class="layout">
@@ -25,9 +26,9 @@
         <a data-route="calendrier" href="#calendrier" class="nav-item"><span class="nav-icon">▣</span><span>Calendrier</span></a>
       </nav>
       <div class="nav-label space-label">OUTILS</div>
-      <nav><a data-route="donnees" href="#donnees" class="nav-item"><span class="nav-icon">◫</span><span>Données & sources</span></a></nav>
-      <nav><a data-route="sync" href="#sync" class="nav-item"><span class="nav-icon">↻</span><span>ÉcoleDirecte</span></a></nav>
-      <div class="sidebar-bottom"><span class="shield">◉</span><div><strong>Privé par conception</strong><small>Données sur cet appareil uniquement</small></div></div>
+      <nav><a data-route="stats" href="#stats" class="nav-item"><span class="nav-icon">∑</span><span>Statistiques avancées</span></a></nav>
+      <nav><a data-route="sync" href="#sync" class="nav-item"><span class="nav-icon">↻</span><span>ÉcoleDirecte</span></a><a data-route="donnees" href="#donnees" class="nav-item"><span class="nav-icon">◫</span><span>Données & sources</span></a></nav>
+      <div class="sidebar-bottom"><span class="shield">◉</span><div><strong>Privé par conception</strong><small>Notes locales · connexion cloud facultative</small></div></div>
     </aside>
     <div class="mainarea">
       <header class="topbar">
@@ -35,7 +36,7 @@
         <div class="top-actions"><span class="save-status" id="save-status">Dossier local</span><button class="icon-button" title="Importer un dossier" id="top-import">⇧</button><span class="top-avatar">CV</span></div>
       </header>
       <main id="main" tabindex="-1"></main>
-      <footer class="footer">Cap Véto France · v1.1 <span>•</span> Sources officielles 2026 <span>•</span> Calculs indicatifs non prédictifs <span>•</span> Aucune donnée transmise</footer>
+      <footer class="footer">Cap Véto France · v1.1 <span>•</span> Sources officielles 2026 <span>•</span> Calculs indicatifs non prédictifs <span>•</span> ÉcoleDirecte : connexion facultative</footer>
     </div>
   </div>
   <input id="importfile" type="file" accept=".json,application/json" hidden/>

@@ -60,6 +60,8 @@ function applyRemote(){
   const backup=state?JSON.stringify(state):null;
   if(backup){try{localStorage.setItem('cap-veto-pre-sync-backup-v1',backup)}catch{throw Error('Impossible de sauvegarder avant l’import. Exporte ton dossier JSON puis recommence.')}}
   if(!state)state={schema:'cap-veto-france-v1',grades:[],history:[],confirmed:{},settings:{forecasts:{},historySubject:'Physique-chimie'},checks:{}};
+  // Les statistiques de période restent privées dans le dossier local.
+  state.edPeriods=Array.isArray(syncPending.periods)?syncPending.periods:[];
   state.grades=[...keepManual,...incoming];
   persist();syncPending=null;render();toast(`${incoming.length} notes ÉcoleDirecte importées. Bac recalculé.`);
 }
