@@ -9,34 +9,30 @@
   <meta name="description" content="Cap Véto France : relevé de notes, bac 2027 et comparaison des concours vétérinaires publics."/>
   <title>Cap Véto France — Tableau de bord</title>
   <link rel="stylesheet" href="./styles.css"/>
-  <script defer src="./stats.js"></script>
   <script defer src="./app.js"></script>
   <script defer src="./sync.js"></script>
+  <script defer src="./cap-v3.js"></script>
+  <link rel="stylesheet" href="./cap-v3.css"/>
 </head>
 <body>
   <div class="layout">
     <aside class="sidebar" id="sidebar">
-      <a class="logo" href="#accueil"><span class="logo-icon">C<span>V</span></span><span><strong>Cap Véto</strong><small>FRANCE · SESSION 2027</small></span></a>
-      <div class="nav-label">ESPACE PERSONNEL</div>
-      <nav aria-label="Navigation principale" id="navigation">
-        <a data-route="accueil" href="#accueil" class="nav-item active"><span class="nav-icon">▦</span><span>Vue d'ensemble</span></a>
-        <a data-route="notes" href="#notes" class="nav-item"><span class="nav-icon">▤</span><span>Mes notes</span></a>
-        <a data-route="bac" href="#bac" class="nav-item"><span class="nav-icon">◈</span><span>Bac 2027</span></a>
-        <a data-route="env" href="#env" class="nav-item"><span class="nav-icon">◎</span><span>Concours ENV</span></a>
-        <a data-route="calendrier" href="#calendrier" class="nav-item"><span class="nav-icon">▣</span><span>Calendrier</span></a>
+      <a class="logo" href="#accueil"><span class="logo-icon">CV</span><span><strong>Cap Véto</strong><small>Mon parcours · 2027</small></span></a>
+      <nav id="navigation" aria-label="Navigation principale">
+        <a data-route="accueil" class="nav-item" href="#accueil">Aujourd'hui</a>
+        <a data-route="matieres" class="nav-item" href="#matieres">Mes matières</a>
+        <a data-route="bac" class="nav-item" href="#bac">Objectif bac</a>
+        <a data-route="suivi" class="nav-item" href="#suivi">Suivi et réglages</a>
       </nav>
-      <div class="nav-label space-label">OUTILS</div>
-      <nav><a data-route="stats" href="#stats" class="nav-item"><span class="nav-icon">∑</span><span>Statistiques avancées</span></a></nav>
-      <nav><a data-route="sync" href="#sync" class="nav-item"><span class="nav-icon">↻</span><span>ÉcoleDirecte</span></a><a data-route="donnees" href="#donnees" class="nav-item"><span class="nav-icon">◫</span><span>Données & sources</span></a></nav>
-      <div class="sidebar-bottom"><span class="shield">◉</span><div><strong>Privé par conception</strong><small>Notes locales · connexion cloud facultative</small></div></div>
+      <div class="sidebar-bottom"><span class="shield">●</span><div><strong>Dossier personnel</strong><small>Notes dans ce navigateur</small></div></div>
     </aside>
     <div class="mainarea">
       <header class="topbar">
-        <div class="top-breadcrumb"><button class="menu-button" aria-label="Ouvrir le menu" id="menubtn">☰</button><span>PROJET VÉTÉRINAIRE</span><span class="crumbslash">/</span><b>SESSION 2027</b></div>
+        <div class="top-breadcrumb"><button class="menu-button" aria-label="Ouvrir le menu" id="menubtn">☰</button><span>TON PARCOURS</span><span class="crumbslash">/</span><b>OBJECTIF MENTION TRÈS BIEN</b></div>
         <div class="top-actions"><span class="save-status" id="save-status">Dossier local</span><button class="icon-button" title="Importer un dossier" id="top-import">⇧</button><span class="top-avatar">CV</span></div>
       </header>
       <main id="main" tabindex="-1"></main>
-      <footer class="footer">Cap Véto France · v1.1 <span>•</span> Sources officielles 2026 <span>•</span> Calculs indicatifs non prédictifs <span>•</span> ÉcoleDirecte : connexion facultative</footer>
+      <footer class="footer">Cap Véto · version 3 <span>·</span> Notes officielles et simulations clairement séparées <span>·</span> Données locales</footer>
     </div>
   </div>
   <input id="importfile" type="file" accept=".json,application/json" hidden/>
